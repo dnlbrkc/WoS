@@ -64,10 +64,7 @@ paper$content$`abstracts-retrieval-response`$coredata$`dc:description`
 
 
 #get keywords
-paper$content$`abstracts-retrieval-response`$
-  
-  #get keywords
-  paper$content$`abstracts-retrieval-response`$authkeywords
+paper$content$`abstracts-retrieval-response`$authkeywords
 
 
 
