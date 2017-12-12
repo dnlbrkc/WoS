@@ -47,3 +47,27 @@ b<- "http://apps.webofknowledge.com/InterService.do?product=WOS&toPID=WOS&action
 
 
 
+
+#Get abstract for a paper using SCOPUS
+
+library(rscopus)
+set_api_key("c2c55699f1c9d5642e2e0c744291fdc5") #you can get your own API key by registering on the SCOPUS website
+
+example_doi <- "10.1007/978-3-319-64310-6_13"
+
+paper <- abstract_retrieval(example_doi,
+                            identifier = c("doi"), 
+                            http_end = NULL)
+
+#get abstract
+paper$content$`abstracts-retrieval-response`$coredata$`dc:description`
+
+
+#get keywords
+paper$content$`abstracts-retrieval-response`$
+  
+  #get keywords
+  paper$content$`abstracts-retrieval-response`$authkeywords
+
+
+
