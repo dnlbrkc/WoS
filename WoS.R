@@ -66,5 +66,6 @@ paper$content$`abstracts-retrieval-response`$coredata$`dc:description`
 #get keywords
 paper$content$`abstracts-retrieval-response`$authkeywords
 
-
+#get references
+paper$content$`abstracts-retrieval-response`$item
 
