@@ -43,7 +43,11 @@ a <-"http://apps.webofknowledge.com/InterService.do?product=WOS&toPID=WOS&action
 b<- "http://apps.webofknowledge.com/InterService.do?product=WOS&toPID=WOS&action=AllCitationService&isLinks=yes&highlighted_tab=WOS&last_prod=WOS&fromPID=WOS&returnLink=http%3a%2f%2fapps.webofknowledge.com%2ffull_record.do%3fhighlighted_tab%3dWOS%26last_prod%3dWOS%26search_mode%3dAdvancedSearch%26qid%3d51%26log_event%3dyes%26product%3dWOS%26SID%3dD62RGf3DTL1AwixErdZ%26viewType%3dfullRecord%26doc%3d1%26page%3d1&srcDesc=RET2WOS&srcAlt=Back+to+Web+of+Science&UT=WOS:A1968A428000023&search_mode=CitedRefList&SID=D62RGf3DTL1AwixErdZ&parentProduct=WOS&parentQid=51&parentDoc=1&recid=WOS:A1968A428000023&PREC_REFCOUNT=6&fromRightPanel=true"
 
 
+#Get missing DOI information by matching web of science titles with CrossRef 
+library(rcrossref)
+retreive_doi=cr_works(filter = c(issn=c('0036-8075')),flq = c(query.title=pubs$title[16]))
 
+retreive_doi[[2]]$DOI[1]
 
 
 
@@ -68,4 +72,6 @@ paper$content$`abstracts-retrieval-response`$authkeywords
 
 #get references
 paper$content$`abstracts-retrieval-response`$item
+
+
 
