@@ -3,6 +3,7 @@
 library(rvest)
 library(stringi)
 library(data.table)
+library(rcrossref)
 
 # Go through these...
 S <- paste0("http://mjl.clarivate.com/cgi-bin/jrnlst/jlresults.cgi?PC=D&mode=print&Page=",1:20)
@@ -191,3 +192,14 @@ raw_abs <- entrez_fetch(db="pubmed", id= pubmed_dt[!is.na(pubmedid),]$pubmedid[5
 cat(raw_abs)
 # ------------------------------------------
 
+
+
+# (6) Get article information
+# -----------------------------------
+
+# For one
+article_info <- get_article_info(doi = science_dois$doi[5])
+
+# For multiple
+article_info <- lapply(science_dois$doi[1:2],function(d) try(get_article_info(doi = d)))
+# -----------------------------------
