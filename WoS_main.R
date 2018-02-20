@@ -11,7 +11,7 @@
 # ------------------------------------------
 computer <- "martin work"
 if(computer=="martn work"){
-  git_folder <- "C:/Users/marar08/Documents/WoS/"
+  git_source <- "C:/Users/marar08/Documents/WoS/"
 }else if(computer=="daniel"){
   git_source <- ""
 }
