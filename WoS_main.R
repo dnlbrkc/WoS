@@ -96,6 +96,14 @@ authors_dt <- rbindlist(lapply(ai_dt[sapply(ai_dt,is.list)],function(x)x$authors
 reference_dt <- rbindlist(lapply(ai_dt[sapply(ai_dt,is.list)],function(x)x$reference_dt))
 abstract_dt <- rbindlist(lapply(ai_dt[sapply(ai_dt,is.list)],function(x)x$abstract_dt))
 
+#
+getwd()
+saveRDS(object = list(basics_dt=basics_dt,
+                      authors_dt=authors_dt,
+                      reference_dt=reference_dt,
+                      abstract_dt=abstract_dt),file = "ai_dt_cleaned(2018-02-21).rds")
+saveRDS(object = ai_dt, file = "ai_dt(2018-02-21).rds")
+
 # Check pubmed_ids for failed ones
 pubmed_dt <- lapply(science_dois$doi[a][1:10], function(d) get_pubmedid(doi = d))
 pubmed_dt <- rbindlist(pubmed_dt)
