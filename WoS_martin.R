@@ -94,6 +94,8 @@ pubmed_dt[!is.na(pubmedid)]
 # ------------------------------------------
 # Set api key
 set_api_key("c2c55699f1c9d5642e2e0c744291fdc5")
+rscopus::generic_elsevier_api(api_key = )
+set_
 
 # Examle (DOI)
 article <- rscopus::article_retrieval(id = science_dois$doi[5],

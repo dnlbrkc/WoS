@@ -10,7 +10,7 @@
 # Set user
 # ------------------------------------------
 computer <- "martin work"
-if(computer=="martn work"){
+if(computer=="martin work"){
   git_source <- "C:/Users/marar08/Documents/WoS/"
 }else if(computer=="daniel"){
   git_source <- ""
@@ -51,7 +51,7 @@ issns <- unlist(list(S_issn,SS_issn,H_issn,ES_issn))
 
 # Example (Science dois)
 system.time(science_dois <- get_dois(issn = '0036-8075',
-                                     from_year = 2000, 
+                                     from_year = 2017, 
                                      to_year = 2017))
 science_dois
 # ------------------------------------------
@@ -69,20 +69,21 @@ set_api_key(api_key)
 # =============
 #article_info <- get_article_info(doi = science_dois$doi[5])
 
-# For multiple
+# For multiple (non-parallel)
 # =============
-#article_info <- lapply(science_dois$doi[1:2],function(d) try(get_article_info(doi = d)))
+ai_dt <- lapply(science_dois$doi[1:10],function(d) try(get_article_info(doi = d)))
 
 # For multiple (parallel)
 # =============
 ncores <- detectCores() - 1
+#ncores <- 3
 cl <- parallel::makeCluster(ncores)
 varlist <- c("data.table","get_article_info","get_basics","get_authors_dt",
              "get_reference_dt","get_abstract","abstract_retrieval","set_api_key",
-             "api_key","rbindlist","setcolorder")
+             "api_key","rbindlist","setcolorder","unlist")
 parallel::clusterExport(cl = cl,varlist = varlist,envir = environment())
 system.time(ai_dt <- parLapply(cl = cl,
-                               X = science_dois$doi,
+                               X = science_dois$doi[1:200],
                                fun = function(d) try(get_article_info(doi = d,api_key = api_key))))
 parallel::stopCluster(cl)
 a <- sapply(ai_dt,is.list)

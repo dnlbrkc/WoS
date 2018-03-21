@@ -157,6 +157,10 @@ get_article_info <- function(doi=NULL,
   #doi = science_dois$doi[192]
   #doi = "10.1126/science.aaf8287"
   
+  ## Test 2
+  #doi = scienceDOI$doi[8]
+  #doi <- science_dois$doi[1]
+  
   # Set API key
   # * This could be done outside!
   if(!is.null(api_key)){
@@ -174,6 +178,11 @@ get_article_info <- function(doi=NULL,
     abstract <- abstract_retrieval(id = pubmed_id,
                                             identifier = c("pubmed_id"),
                                             http_end = NULL)
+  }
+  
+  # Check statuscode
+  if(length(abstract$content$`service-error`)>0){
+    return("RESOURCE_NOT_FOUND")
   }
   
   # Extract useful information
@@ -245,20 +254,51 @@ get_authors_dt <- function(abstract,doi=NULL){
 # ------------------------------------------
 get_reference_dt <- function(abstract,doi=NULL){
   
+  # Define sub-function
   extract_reference_info <- function(reference){
+    ## Test
+    #reference <- references[[1]]
+    
+    # 1 Publication year
     pubyear <- reference$`ref-info`$`ref-publicationyear`[['@first']]
     if(is.null(pubyear)){pubyear <- NA}
+    # 2 Source title
     sourcetitle <- reference$`ref-info`$`ref-sourcetitle`
     if(is.null(sourcetitle)){sourcetitle <- NA}
-    return(data.table(id=reference[['@id']],
-                      itemid=reference$`ref-info`$`refd-itemidlist`$itemid[['$']],
-                      itemid_type=reference$`ref-info`$`refd-itemidlist`$itemid[['@idtype']],
-                      pub_year=pubyear,
-                      sourcetitle=sourcetitle))
+    # 3 Item-id & itemtype-id
+    itemid <- reference$`ref-info`$`refd-itemidlist`$itemid[['$']]
+    if(is.null(itemid)){
+      temp <- reference$`ref-info`$`refd-itemidlist`$itemid
+      temp <- unlist(temp)
+      # item-id
+      itemid <- paste(temp[names(temp)=="$"],collapse=" ")
+      # item-type-id
+      itemid_type <- paste(temp[names(temp)=="@idtype"],collapse=" ")
+    }else{
+      itemid_type <- reference$`ref-info`$`refd-itemidlist`$itemid[['@idtype']]
+    }
+    # Combine in DT
+    ref_dt <- data.table(id=reference[['@id']],
+                         itemid=itemid,
+                         itemid_type=itemid_type,
+                         pub_year=pubyear,
+                         sourcetitle=sourcetitle)
+    return(ref_dt)
   }
+  
+  # Extract reference object
   references <- abstract$content$`abstracts-retrieval-response`$item$bibrecord$tail$bibliography$reference
   if(is.null(references)){return(NULL)}
+  
+  # Process references
   reference_dt <- lapply(references,extract_reference_info)
+  # reference_dt <- list()             # TEST!
+  # for(i in 1:length(references)){
+  #   reference_dt[[i]]<-extract_reference_info(reference = references[[i]]);
+  #   print(i)
+  # }
+  
+  # Bind and order
   reference_dt <- rbindlist(reference_dt)
   reference_dt[,seq:=.I]
   setcolorder(reference_dt,c(1,6,4,2,3,5))
