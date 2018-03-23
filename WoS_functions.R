@@ -182,7 +182,12 @@ get_article_info <- function(doi=NULL,
   
   # Check statuscode
   if(length(abstract$content$`service-error`)>0){
-    return("RESOURCE_NOT_FOUND")
+    # Return specifics of error code?
+    error_status_code <- abstract$get_statement$status_code
+    error_content <- paste(unlist(abstract$content),collapse = " - ")
+    return(paste("Error code: ",error_status_code," - Error content: ",error_content))
+    # Or not...
+    #return("RESOURCE_NOT_FOUND")
   }
   
   # Extract useful information

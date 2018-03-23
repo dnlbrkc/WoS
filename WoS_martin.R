@@ -133,6 +133,7 @@ cat(raw_abs)
 
 # Set api key
 api_key <- "b8a2b819586396f53d4b1dbe8e40cb82"
+api_key <- "fe6dfeb04d660f8721f25d624fb6a824"
 set_api_key(api_key)
 
 # For one
@@ -145,15 +146,17 @@ article_info <- lapply(science_dois$doi[1:10],function(d) try(get_article_info(d
 cl <- parallel::makeCluster(7)
 varlist <- c("data.table","get_article_info","get_basics","get_authors_dt",
              "get_reference_dt","get_abstract","abstract_retrieval","set_api_key",
-             "api_key","rbindlist","setcolorder")
+             "api_key","rbindlist","setcolorder","setkeyv")
 parallel::clusterExport(cl = cl,varlist = varlist,envir = environment())
 system.time(ai_dt <- parLapply(cl = cl,
-                                   X = science_dois$doi,
+                                   X = science_dois$doi[1:1000],
                                    fun = function(d) try(get_article_info(doi = d,api_key = api_key))))
 parallel::stopCluster(cl)
 a <- sapply(ai_dt,is.list)
 a <- which(a==FALSE)
 science_dois$doi[a]
+ai_dt[a]
+ai_dt[!a]
 length(ai_dt)
 
 # Extract list elements

@@ -71,7 +71,7 @@ set_api_key(api_key)
 
 # For multiple (non-parallel)
 # =============
-ai_dt <- lapply(science_dois$doi[1:100],function(d) try(get_article_info(doi = d)))
+ai_dt <- lapply(science_dois$doi[1:10],function(d) try(get_article_info(doi = d)))
 
 # For multiple (parallel)
 # =============
