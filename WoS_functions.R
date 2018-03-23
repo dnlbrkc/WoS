@@ -159,7 +159,7 @@ get_article_info <- function(doi=NULL,
   
   ## Test 2
   #doi = scienceDOI$doi[8]
-  #doi <- science_dois$doi[1]
+  #doi <- science_dois$doi[4]
   
   # Set API key
   # * This could be done outside!
@@ -207,18 +207,36 @@ get_article_info <- function(doi=NULL,
 get_authors_dt <- function(abstract,doi=NULL){
   
   extract_author_info <- function(author){
-    aff_id <- author$affiliation[['@id']]
+    ## Test
+    #author <- authors[[5]]
+    aff_info <- author$affiliation
+    if(length(aff_info)>1){
+      # Aff id
+      aff_info <- unlist(aff_info)
+      aff_id <- aff_info[names(aff_info) == "@id"]
+      #aff_id <- paste(aff_info[names(aff_info) == "@id"],collapse = " - ")
+    }else{
+      aff_id <- aff_info[['@id']]
+    }
     if(is.null(aff_id)){aff_id <-NA}
-    given_name <- author[['ce:given-name']]
-    if(is.null(given_name)){given_name<-NA}
+    #given_name <- author[['ce:given-name']]
+    given_name2 <- author[['preferred-name']][['ce:given-name']]
+    indexed_name <- author[['ce:indexed-name']]
+    #if(is.null(given_name)){given_name<-NA}
+    if(is.null(given_name2)){given_name2<-NA}
+
+    # Return
     return(data.table(author_id=author[['@auid']],
-                      seq=author[['@seq']],
-                      given_name=given_name,
+                      seq=as.numeric(author[['@seq']]),
+                      #given_name=given_name,
+                      given_name2=given_name2,
+                      indexed_name=indexed_name,
                       initials=author[['ce:initials']],
                       surname=author[['ce:surname']],
                       affiliation_id=aff_id))
   }
   
+  # Use function
   authors <- abstract$content$`abstracts-retrieval-response`$authors$author
   author_dt <- lapply(authors,extract_author_info)
   author_dt <- rbindlist(author_dt)
@@ -242,12 +260,15 @@ get_authors_dt <- function(abstract,doi=NULL){
   }
   # Add doi?
   if(!is.null(doi)){author_dt[,doi:=doi]}
+  # Order
+  setkeyv(author_dt,c("seq"))
   # Return
   return(author_dt)
 }
 ## Test
 #auth_dt <- get_authors_dt(abstract = abstract)
 # ------------------------------------------
+
 
 
 # Get reference dt
@@ -257,7 +278,7 @@ get_reference_dt <- function(abstract,doi=NULL){
   # Define sub-function
   extract_reference_info <- function(reference){
     ## Test
-    #reference <- references[[1]]
+    #reference <- references[[4]]
     
     # 1 Publication year
     pubyear <- reference$`ref-info`$`ref-publicationyear`[['@first']]

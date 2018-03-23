@@ -132,14 +132,14 @@ cat(raw_abs)
 # -----------------------------------
 
 # Set api key
-api_key <- "c2c55699f1c9d5642e2e0c744291fdc5"
+api_key <- "b8a2b819586396f53d4b1dbe8e40cb82"
 set_api_key(api_key)
 
 # For one
 article_info <- get_article_info(doi = science_dois$doi[5])
 
 # For multiple
-article_info <- lapply(science_dois$doi[1:2],function(d) try(get_article_info(doi = d)))
+article_info <- lapply(science_dois$doi[1:10],function(d) try(get_article_info(doi = d)))
 
 # For multiple (parallel)
 cl <- parallel::makeCluster(7)

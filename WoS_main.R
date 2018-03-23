@@ -71,7 +71,7 @@ set_api_key(api_key)
 
 # For multiple (non-parallel)
 # =============
-ai_dt <- lapply(science_dois$doi[1:10],function(d) try(get_article_info(doi = d)))
+ai_dt <- lapply(science_dois$doi[1:100],function(d) try(get_article_info(doi = d)))
 
 # For multiple (parallel)
 # =============
@@ -83,7 +83,7 @@ varlist <- c("data.table","get_article_info","get_basics","get_authors_dt",
              "api_key","rbindlist","setcolorder","unlist")
 parallel::clusterExport(cl = cl,varlist = varlist,envir = environment())
 system.time(ai_dt <- parLapply(cl = cl,
-                               X = science_dois$doi[1:200],
+                               X = science_dois$doi,
                                fun = function(d) try(get_article_info(doi = d,api_key = api_key))))
 parallel::stopCluster(cl)
 a <- sapply(ai_dt,is.list)
@@ -102,8 +102,8 @@ getwd()
 saveRDS(object = list(basics_dt=basics_dt,
                       authors_dt=authors_dt,
                       reference_dt=reference_dt,
-                      abstract_dt=abstract_dt),file = "ai_dt_cleaned(2018-02-21).rds")
-saveRDS(object = ai_dt, file = "ai_dt(2018-02-21).rds")
+                      abstract_dt=abstract_dt),file = "ai_dt_cleaned(2018-03-22).rds")
+saveRDS(object = ai_dt, file = "ai_dt(2018-03-22).rds")
 
 # Check pubmed_ids for failed ones
 pubmed_dt <- lapply(science_dois$doi[a][1:10], function(d) get_pubmedid(doi = d))
