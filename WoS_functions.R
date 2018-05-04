@@ -78,9 +78,15 @@ get_dois <- function(issn,from_year,to_year){
                        offset = min,
                        limit = 1000)
       if(!is.null(temp)){
-        dois_year_dt[[ticker]] <- data.table(doi=temp$data$DOI,
-                                             issn=temp$data$ISSN,
-                                             issued=temp$data$issued)
+        temp_doi <- temp$data$DOI
+        temp_issn <- temp$data$ISSN
+        temp_issued <- temp$data$issued
+        if(is.null(temp_doi)){temp_doi <- NA}
+        if(is.null(temp_issn)){temp_issn <- NA}
+        if(is.null(temp_issued)){temp_issued <- NA}
+        dois_year_dt[[ticker]] <- data.table(doi=temp_doi, #temp$data$DOI,
+                                             issn=temp_issn, #temp$data$ISSN,
+                                             issued=temp_issued) #temp$data$issued)
       }
       if(nrow(temp$data)<1000){
         status <- 1

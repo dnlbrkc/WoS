@@ -51,8 +51,8 @@ issns <- unlist(list(S_issn,SS_issn,H_issn,ES_issn))
 
 # Example (Science dois)
 system.time(science_dois <- get_dois(issn = '0036-8075',
-                         from_year = 2000, 
-                         to_year = 2017))
+                                     from_year = 2000, 
+                                     to_year = 2017))
 science_dois
 # ------------------------------------------
 
@@ -131,9 +131,15 @@ cat(raw_abs)
 # (6) Get article information
 # -----------------------------------
 
-# Set api key
+# Daniel api keys
 api_key <- "b8a2b819586396f53d4b1dbe8e40cb82"
 api_key <- "fe6dfeb04d660f8721f25d624fb6a824"
+
+# Martin api keys
+api_key <- "491dbbb3c51a864fb3fe0687c14a13c6"
+api_key <- "b3b19b96818de6f942e29b02af817219"
+api_key <- "60700745d816adfd2235243f6f0d3250"
+
 set_api_key(api_key)
 
 # For one
@@ -142,6 +148,8 @@ article_info <- get_article_info(doi = science_dois$doi[5])
 # For multiple
 article_info <- lapply(science_dois$doi[1:10],function(d) try(get_article_info(doi = d)))
 
+# Split into chunks
+
 # For multiple (parallel)
 cl <- parallel::makeCluster(7)
 varlist <- c("data.table","get_article_info","get_basics","get_authors_dt",
@@ -149,9 +157,11 @@ varlist <- c("data.table","get_article_info","get_basics","get_authors_dt",
              "api_key","rbindlist","setcolorder","setkeyv")
 parallel::clusterExport(cl = cl,varlist = varlist,envir = environment())
 system.time(ai_dt <- parLapply(cl = cl,
-                                   X = science_dois$doi[1:1000],
+                                   X = science_dois$doi[1001:5000],
                                    fun = function(d) try(get_article_info(doi = d,api_key = api_key))))
 parallel::stopCluster(cl)
+
+# Check errors
 a <- sapply(ai_dt,is.list)
 a <- which(a==FALSE)
 science_dois$doi[a]
