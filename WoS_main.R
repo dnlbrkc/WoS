@@ -49,14 +49,20 @@ issns <- unlist(list(S_issn,SS_issn,H_issn,ES_issn))
 # (2) Get doi's via cross ref
 # ------------------------------------------
 
+pnas_issn <- '1091-6490'
+science_issn <- '0036-8075'
+
 # Example (Science dois)
-system.time(science_dois <- get_dois(issn = '0036-8075',
-                                     from_year = 1850, 
-                                     to_year = 1899))
-science_dois[,issued := lubridate::as_date(issued)]
-science_dois <- science_dois[order(issued,decreasing = F)]
-science_dois <- science_dois[!is.na(doi)]
-science_dois_1880_1999 <- science_dois[issued <= lubridate::as_date("1999-12-31")]
+system.time(dois <- get_dois(issn = pnas_issn,
+                             from_year = 1950, 
+                             to_year = 1980))
+science_dois2 <- copy(science_dois) # 1980-1999
+dois <- rbindlist(list(dois,science_dois2)) # 1950-1999
+dois[,issued := lubridate::as_date(issued)]
+dois <- dois[order(issued,decreasing = F)]
+dois <- dois[!is.na(doi)]
+dois <- dois[!is.na(issued)]
+#science_dois_1880_1999 <- science_dois[issued <= lubridate::as_date("1999-12-31")]
 # ------------------------------------------
 
 
@@ -104,7 +110,7 @@ ai_dt <- lapply(science_dois$doi[1:10],function(d) try(get_article_info(doi = d)
 
 # Split into chunks
 chunk_size <- 10000
-doi_vector <- science_dois$doi
+doi_vector <- dois$doi
 #doi_vector <- science_dois_1880_1999$doi
 doi_chunks <- split(doi_vector, ceiling(seq_along(doi_vector)/chunk_size))
 
@@ -115,7 +121,7 @@ process_n_chunks <- 1:length(doi_chunks)
 for(i in process_n_chunks){
   
   # Set api-key
-  api_key <- api_keys[i]
+  api_key <- api_keys[7+i]
   set_api_key(api_key)
   
   # Collect
@@ -165,7 +171,9 @@ abstract_dt <- rbindlist(abstract_dt)
 
 # Export
 getwd()
-export_name <- "science_1970_1999 (2018-04-11).rds"
+#export_name <- "science_1970_1999 (2018-04-11).rds"
+#export_name <- "PNAS_2000_2017 (2018-05-17).rds"
+export_name <- "PNAS_1949_1998 (2018-05-22).rds"
 saveRDS(object = list(basics_dt=basics_dt,
                       authors_dt=authors_dt,
                       reference_dt=reference_dt,
