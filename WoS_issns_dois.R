@@ -4,7 +4,7 @@ library(dplyr)
 
 
 
-# STEP 1
+# STEP 1: Collect journal names and ISSN numbers and total number of publications
 # ------------------------------------------------------------------------
 store <- list()
 os <- 0
@@ -66,24 +66,32 @@ for(i in 1:length(store$issn)){
   offset_seq <- offset_seq[-length(offset_seq)]
   store2 <- list()
   for(j in 1:length(offset_seq)){
-    if(j==1){
-      store2[[j]] <- cr_journals(issn = store$issn[i], 
-                                 offset = NULL,
-                                 limit = 1000,
-                                 select = c('DOI','title'),
-                                 works=T,
-                                 cursor_max = current_max,
-                                 cursor = "*")$data
-    }else{
-      store2[[j]] <- cr_journals(issn = store$issn[i], 
-                                 offset = offset_seq[j], 
-                                 limit = 1000,
-                                 select = c('DOI','title'),
-                                 works=T,
-                                 cursor_max = current_max,
-                                 cursor = "*")$data
-    }
-    #print(j)
+    
+    tryCatch({
+      
+      if(j==1){
+        store2[[j]] <- cr_journals(issn = store$issn[i], 
+                                   offset = NULL,
+                                   limit = 1000,
+                                   select = c('DOI','title'),
+                                   works=T,
+                                   cursor_max = current_max,
+                                   cursor = "*")$data
+      }else{
+        store2[[j]] <- cr_journals(issn = store$issn[i], 
+                                   offset = offset_seq[j], 
+                                   limit = 1000,
+                                   select = c('DOI','title'),
+                                   works=T,
+                                   cursor_max = current_max,
+                                   cursor = "*")$data
+      }
+      #print(j)
+      
+    },warning = function(q){
+    },error = function(w){
+    },finally = {})
+    
   }
   
   # Bind & store in "store3"
@@ -95,4 +103,5 @@ for(i in 1:length(store$issn)){
   # Print
   print(i)
 }
+
 # ------------------------------------------------------------------------
