@@ -1,8 +1,12 @@
 get_dois <- function(issn,from_year,to_year){
   
+  # Test
+  #issn = store_batches[[i]][j]
+  #from_year = 1900
+  #to_year = 2017
+  
   # Store
   dois_dt <- list()
-  
   
   #loop by months
   dates <- paste0(rep(c(from_year:to_year),each=12),c('-01-01','-02-01','-03-01','-04-01','-05-01','-06-01','-07-01','-08-01','-09-01','-10-01','-11-01','-12-01'))
