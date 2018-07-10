@@ -7,7 +7,7 @@ source("get_dois_function.R")
 load("store.Rdata")
 
 # Split into batches
-chunk_size <- 100
+chunk_size <- 50
 issn_vector <- store$issn
 store_batches <- split(issn_vector, ceiling(seq_along(issn_vector)/chunk_size))
 
@@ -25,9 +25,10 @@ for(i in 1:length(store_batches)){
   # Add to big list
   temp_dois <- temp_dois[sapply(temp_dois,is.data.table)]
   temp_dois <- rbindlist(temp_dois)
-  store_dois <- rbindlist(store_dois,temp_dois)
+  store_dois <- rbindlist(list(store_dois,temp_dois))
   # Print status
   print(i)
   # Export
-  saveRDS(object = store_dois,file = paste0('dois_',i,'.rds'))
+  saveRDS(object = temp_dois,file = paste0('dois_',i,'.rds'))
+  rm(temp_dois)
 }
