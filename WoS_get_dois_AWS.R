@@ -23,7 +23,7 @@ for(i in machine_id){
   for(j in 1:length(store_batches[[i]])){
     #j=1  
     # Process
-    temp_dois[[j]] <- get_dois(issn = store_batches[[i]][j],from_year = 1900,to_year = 2017)
+    temp_dois[[j]] <- get_dois2(issn = store_batches[[i]][j],from_year = 1900,to_year = 2017)
     print(j)
   }
   # Add to big list
