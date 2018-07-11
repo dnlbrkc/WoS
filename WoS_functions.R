@@ -122,6 +122,65 @@ get_dois <- function(issn,from_year,to_year){
 # ------------------------------------------
 
 
+# (2) Obtain doi's via crossref 
+# ------------------------------------------
+get_dois2 <- function(issn,from_year,to_year){
+  
+  # Store
+  dois_dt <- list()
+  
+  # Retrieve
+  issn_tick <- 0
+  for(year in rev(from_year:to_year)){
+    issn_tick <- issn_tick + 1
+    # Within-year
+    # -------------------
+    min <- 0
+    status <- 0
+    ticker <- 0
+    dois_year_dt <- list()
+    for(ticker in 1:10){
+      temp <- cr_works(filter = c(issn=c(issn),
+                                  from_pub_date=paste0((year-1),"-01-01"),
+                                  until_pub_date=paste0(year,"-01-01")),
+                       offset = min,
+                       limit = 1000)
+      if(!is.null(temp)){
+        temp_doi <- temp$data$DOI
+        temp_issn <- temp$data$ISSN
+        temp_issued <- temp$data$issued
+        if(is.null(temp_doi)){temp_doi <- NA}
+        if(is.null(temp_issn)){temp_issn <- NA}
+        if(is.null(temp_issued)){temp_issued <- NA}
+        dois_year_dt[[ticker]] <- data.table(doi=temp_doi, #temp$data$DOI,
+                                             issn=temp_issn, #temp$data$ISSN,
+                                             issued=temp_issued) #temp$data$issued)
+      }else{
+        if(ticker > 1){
+          dois_year_dt <- rbindlist(dois_year_dt)
+          return(dois_year_dt)
+        }else{
+          return('No entries found')
+        }
+      }
+      print(ticker)
+    }
+    # -------------------
+    
+    # Rbind
+    dois_dt[[issn_tick]] <- rbindlist(dois_year_dt)
+    # Next year...
+    #year <- year - 1
+  }
+  
+  
+  # Rbind
+  dois_dt <- rbindlist(dois_dt)
+  # Return
+  return(dois_dt)
+}
+# ------------------------------------------
+
 
 # Get abstract (functions) -- OLD
 # -----------------------------------
