@@ -1,7 +1,7 @@
 library(data.table)
 library(rcrossref)
 library(dplyr)
-
+library(saveRDS)
 
 source("WoS_functions.R")
 load("store.Rdata")
