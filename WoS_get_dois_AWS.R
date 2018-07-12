@@ -4,10 +4,10 @@ library(dplyr)
 library(saveRDS)
 
 source("WoS_functions.R")
-load("store.Rdata")
+load("issn.Rdata")
 
 # Split into batches
-issn_vector <- store$issn
+issn_vector <- issn
 n_cores <- 6
 chunk_size <- length(issn_vector)/n_cores
 store_batches <- split(issn_vector, ceiling(seq_along(issn_vector)/chunk_size))

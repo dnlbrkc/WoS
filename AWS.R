@@ -70,6 +70,7 @@ store_batches <- split(issn_vector, ceiling(seq_along(issn_vector)/chunk_size))
 #change this for each machine
 machine_id <- 1
 
+a <- Sys.time()
 # Collect
 store_dois <- list()
 #for(i in machine_id){
@@ -78,9 +79,10 @@ temp_dois <- list()
 for(j in 1:length(store_batches[[i]])){
   #j=1  
   # Process
-  temp_dois[[j]] <- get_dois2(issn = store_batches[[i]][j],from_year = 1900,to_year = 2017)
+  temp_dois[[j]] <- get_dois2(issn = store_batches[[i]][j],from_year = 1970,to_year = 2017)
   print(j)
   save(temp_dois,file=paste0('res_',j,'.Rdata'))
+  print(Sys.time() - a)
 }
 
 # Add to big list
