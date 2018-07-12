@@ -163,7 +163,7 @@ get_dois2 <- function(issn,from_year,to_year){
           return('No entries found')
         }
       }
-      print(ticker)
+      #print(ticker)
     }
     # -------------------
     

@@ -27,6 +27,7 @@ store_dois <- list()
     print(j)
     save(temp_dois,file=paste0('res_',j,'.Rdata'))
   }
+  
   # Add to big list
  # temp_dois <- temp_dois[sapply(temp_dois,is.data.table)]
  # temp_dois <- rbindlist(temp_dois)
